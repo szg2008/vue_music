@@ -32,6 +32,7 @@
       text-align: center
       .tab-link
         padding-bottom: 5px
+        color:#fff
       &.router-link-active
         .tab-link
           color: $color-theme

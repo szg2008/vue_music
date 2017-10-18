@@ -1,8 +1,14 @@
 <template lang="html">
     <div class="recommend">
         <div class="recommend-content">
-            <div class="slider-wrapper">
-
+            <div class="slider-wrapper" v-if="recommends.length">
+                <slider>
+                    <div v-for="item in recommends">
+                        <a :href="item.linkUrl">
+                            <img :src="item.picUrl"/>
+                        </a>
+                    </div>
+                </slider>
             </div>
             <div class="recommend-list">
                 <h1 class="list-title">热门推荐</h1>
@@ -15,18 +21,27 @@
 </template>
 
 <script>
+import Slider from 'base/slider/slider'
 import {getRecommend} from 'api/recommend'
 import {ERR_OK} from 'api/config'
 
 export default {
+    data(){
+        return {
+            recommends:[]
+        }
+    },
     created(){
         this._getRecomend()
     },
     methods:{
         async _getRecomend(){
             const result = await getRecommend()
-            console.log(result.data.slider)
+            this.recommends = result.data.slider
         }
+    },
+    components:{
+        Slider
     }
 }
 </script>
@@ -36,7 +51,8 @@ export default {
     .recommend
         position: fixed
         width: 100%
-        top: 88px
+        top: 100px
+        left:0
         bottom: 0
         .recommend-content
             height: 100%
