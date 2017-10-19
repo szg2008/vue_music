@@ -37,15 +37,15 @@
       }
     },
     mounted() {
-      setTimeout(() => {
-        this._setSliderWidth()
-        this._initDots()
-        this._initSlider()
+        this.$nextTick(() => {
+            this._setSliderWidth()
+            this._initDots()
+            this._initSlider()
 
-        if (this.autoPlay) {
-          this._play()
-        }
-      }, 20)
+            if (this.autoPlay) {
+              this._play()
+            }
+        })
 
       window.addEventListener('resize', () => {
         if (!this.slider) {
@@ -69,7 +69,7 @@
     methods: {
       _setSliderWidth(isResize) {
         this.children = this.$refs.sliderGroup.children
-        
+
         let width = 0
         let sliderWidth = this.$refs.slider.clientWidth
         for (let i = 0; i < this.children.length; i++) {
