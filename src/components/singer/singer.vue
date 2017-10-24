@@ -1,6 +1,6 @@
 <template lang="html">
     <div class="singer">
-
+        <list-view :data="singer"></list-view>
     </div>
 </template>
 
@@ -8,6 +8,7 @@
 import {getSingerList} from 'api/singer'
 import {ERR_OK} from 'api/config'
 import Singer from 'common/js/singer'
+import ListView from 'base/listview/listview'
 
 const HOT_NAME = '热门'
 const HOT_SINGER_LEN = 10
@@ -16,6 +17,9 @@ export default {
         return {
             singer:[]
         }
+    },
+    components:{
+        ListView
     },
     mounted(){
         this.$nextTick(() => {
@@ -28,7 +32,7 @@ export default {
             if(result.code === ERR_OK){
                 this.singer = result.data.list
             }
-            console.log(this._normalizeSinger(this.singer))
+            this.singer = this._normalizeSinger(this.singer)
         },
         _normalizeSinger(list) {
             let map = {
@@ -66,7 +70,7 @@ export default {
                 }else if(val.title === HOT_NAME){
                     hot.push(val)
                 }
-            } 
+            }
             ret.sort((a,b) => {
                 return a.title.charCodeAt(0) - b.title.charCodeAt(0)
             })
