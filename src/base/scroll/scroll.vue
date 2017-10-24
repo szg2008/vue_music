@@ -45,7 +45,7 @@ export default {
         }
     },
     watch:{
-        data(){//监听数据的变化 
+        data(){//监听数据的变化
             setTimeout(() => {
                 this.refresh()
             }, 20)
