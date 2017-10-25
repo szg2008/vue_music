@@ -86,5 +86,6 @@ export default {
         position:fixed
         top:88px
         bottom:0
+        left:0
         width:100%
 </style>
