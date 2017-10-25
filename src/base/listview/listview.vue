@@ -7,10 +7,10 @@
         @scroll="scroll"
         >
         <ul class="list-cont">
-            <li v-for="group in data" class="list-group" ref="listGroup">
+            <li  v-for="group in data" class="list-group" ref="listGroup">
                 <h2 class="list-group-title">{{group.title}}</h2>
                 <ul class="list-cont">
-                    <li v-for="item in group.items" class="list-group-item">
+                    <li @click="selectItem(item)" v-for="item in group.items" class="list-group-item">
                         <img v-lazy="item.avatar" class="avatar"/>
                         <span class="name">{{item.name}}</span>
                     </li>
@@ -83,6 +83,9 @@ export default {
         Loading
     },
     methods:{
+        selectItem(item){//将点击事件派发出去，供外部调用该组件的父组件使用
+            this.$emit('select',item)
+        },
         onShortcutTouchStart(e){
             let anchorIndex = getData(e.target,'index')
             let firstTouch = e.touches[0]
