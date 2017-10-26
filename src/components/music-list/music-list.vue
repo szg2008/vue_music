@@ -4,26 +4,42 @@
             <i class="icon-back"></i>
         </div>
         <h1 class="title" v-html="title"></h1>
-        <div class="bg-image" :style="bgStyle">
-            <div class="play-wrapper">
+        <div class="bg-image" :style="bgStyle" ref="bgImage">
+            <!-- <div class="play-wrapper">
                 <div class="play">
                     <i class="icon-play"></i>
                     <span class="text">随机播放全部</span>
                 </div>
             </div>
-            <div class="filter"></div>
+            <div class="filter"></div> -->
         </div>
-        <div class="bg-layer"></div>
+        <div class="bg-layer" ref="layer"></div>
         <div class="song-list-wrapper">
 
         </div>
         <div class="loading-container">
 
         </div>
+        <scroll
+            :probeType="probeType"
+            :listen-scroll="listenScroll"
+            @scroll="scroll"
+            :data="songs"
+            class="list"
+            ref="list"
+        >
+            <div class="song-list-wrapper">
+                <song-list :songs="songs"></song-list>
+            </div>
+        </scroll>
     </div>
 </template>
 
 <script type="text/ecmascript6">
+import Scroll from 'base/scroll/scroll'
+import SongList from 'base/song-list/song-list'
+
+const RESERVED_HEIGHT = 40
 export default {
     props:{
         bgImage:{
@@ -39,9 +55,50 @@ export default {
             default:''
         }
     },
+    data(){
+        return {
+            scrollY:0
+        }
+    },
     computed:{
         bgStyle(){
             return `background-image:url(${this.bgImage})`
+        }
+    },
+    created(){
+        this.probeType = 3
+        this.listenScroll = true
+    },
+    mounted(){
+        this.imageHeight = this.$refs.bgImage.clientHeight
+        this.minTranslateY = -this.imageHeight + RESERVED_HEIGHT
+        this.$refs.list.$el.style.top = `${this.imageHeight}px`
+    },
+    components:{
+        Scroll,
+        SongList
+    },
+    methods:{
+        scroll(pos){
+            this.scrollY = pos.y
+        }
+    },
+    watch:{
+        scrollY(newY){
+            let translateY = Math.max(this.minTranslateY,newY)
+            let zIndex = 0
+            this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
+            this.$refs.layer.style['webkitTransform'] = `translate3d(0,${translateY}px,0)`
+            if(newY < this.minTranslateY){
+                zIndex = 10
+                this.$refs.bgImage.style.paddingTop = 0
+                this.$refs.bgImage.style.height = `${RESERVED_HEIGHT}px`
+            }else{
+                this.$refs.bgImage.style.paddingTop = '70%'
+                this.$refs.bgImage.style.height = 0
+            }
+
+            this.$refs.bgImage.style.zIndex = zIndex
         }
     }
 }
@@ -128,6 +185,7 @@ export default {
             bottom: 0
             width: 100%
             background: $color-background
+            // overflow:hidden
             .song-list-wrapper
                 padding: 20px 30px
             .loading-container

@@ -1,6 +1,6 @@
 <template lang="html">
     <transition name="slide">
-        <music-list :title="title" :bg-image="bgImage" :songs="song"></music-list>
+        <music-list :title="title" :bg-image="bgImage" :songs="songs"></music-list>
     </transition>
 </template>
 
@@ -24,7 +24,7 @@ export default {
     },
     data(){
         return {
-            song:[]
+            songs:[]
         }
     },
     components:{
