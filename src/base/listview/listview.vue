@@ -168,9 +168,8 @@ export default {
     height: 100%
     overflow: hidden
     background: $color-background
-    .list-cont
-        -webkit-padding-start:0px
-        margin-top:-10px
+    .list-group
+        padding-bottom: 30px
         .list-group-title
             height: 30px
             line-height: 30px
@@ -207,12 +206,11 @@ export default {
             line-height: 1
             color: $color-text-l
             font-size: $font-size-small
-            list-style:none
             &.current
                 color: $color-theme
     .list-fixed
         position: absolute
-        top: -8px
+        top: 0
         left: 0
         width: 100%
         .fixed-title

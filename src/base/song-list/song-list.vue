@@ -32,7 +32,6 @@ export default {
     @import "../../common/stylus/mixin"
 
     .song-ul
-        -webkit-padding-start:0
         .item
             display: flex
             align-items: center
@@ -65,8 +64,6 @@ export default {
                 .name
                     no-wrap()
                     color: $color-text
-                    font-size:14px
-                    margin-bottom:0
                 .desc
                     no-wrap()
                     margin-top: 4px

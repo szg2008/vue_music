@@ -26,8 +26,8 @@
     font-size: 0
     .icon
       display: inline-block
-      vertical-align: middle
-      margin-top: 16px
+      vertical-align: top
+      margin-top: 6px
       width: 30px
       height: 32px
       margin-right: 9px
