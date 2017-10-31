@@ -1,4 +1,4 @@
-// import {getLyric} from 'api/song'
+import {getLyric} from 'api/song'
 import {ERR_OK} from 'api/config'
 import {Base64} from 'js-base64'
 
@@ -14,22 +14,22 @@ export default class Song {
     this.url = url
   }
 
-  // getLyric() {
-  //   if (this.lyric) {
-  //     return Promise.resolve(this.lyric)
-  //   }
-  //
-  //   return new Promise((resolve, reject) => {
-  //     getLyric(this.mid).then((res) => {
-  //       if (res.retcode === ERR_OK) {
-  //         this.lyric = Base64.decode(res.lyric)
-  //         resolve(this.lyric)
-  //       } else {
-  //         reject('no lyric')
-  //       }
-  //     })
-  //   })
-  // }
+  getLyric() {
+      if (this.lyric) {
+          return Promise.resolve(this.lyric)
+      }
+
+      return new Promise((resolve, reject) => {
+          getLyric(this.mid).then((res) => {
+              if (res.retcode === ERR_OK) {
+                  this.lyric = Base64.decode(res.lyric)
+                  resolve(this.lyric)
+              }else{
+                  reject('no lyric')
+              }
+          })
+      })
+  }
 }
 
 //工厂模式创建对象，减少冗余代码
