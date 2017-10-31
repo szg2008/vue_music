@@ -32,13 +32,13 @@
                 <div class="progress-wrapper">
                     <span class="time time-l">{{format(currentTime)}}</span>
                     <div class="progress-bar-wrapper">
-                        <progress-bar :percent="percent"></progress-bar>
+                        <progress-bar :percent="percent" @percentChange="onPercentBarChange"></progress-bar>
                     </div>
                     <span class="time time-r">{{format(currentSong.duration)}}</span>
                 </div>
                 <div class="operators">
-                    <div class="icon i-left">
-                        <i class="icon-sequence"></i>
+                    <div class="icon i-left" @click="changeMode">
+                        <i :class="iconmode"></i>
                     </div>
                     <div class="icon i-left" :class="disableCls">
                         <i class="icon-prev" @click="prev"></i>
@@ -66,7 +66,9 @@
                 <p class="desc" v-html="currentSong.singer"></p>
             </div>
             <div class="control">
-                <i @click.stop="togglePlaying" :class="miniIcon"></i>
+                <progress-circle :radius="radius" :percent="percent">
+                    <i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
+                </progress-circle>
             </div>
             <div class="control">
                 <i class="icon-playlist"></i>
@@ -88,6 +90,8 @@ import {mapGetters,mapMutations} from 'vuex'
 import animations from 'create-keyframe-animation'
 import {prefixStyle} from 'common/js/dom'
 import ProgressBar from 'base/progress-bar/progress-bar'
+import ProgressCircle from 'base/progress-circle/progress-circle'
+import {playMode} from 'common/js/config'
 
 const transform = prefixStyle('transform')
 export default {
@@ -95,6 +99,7 @@ export default {
         return {
             songReady:false,//控制歌曲已经加载完毕
             currentTime:0,//当前播放的时间
+            radius:32
         }
     },
     computed:{
@@ -113,12 +118,16 @@ export default {
         percent(){
             return this.currentTime / this.currentSong.duration
         },
+        iconmode(){
+            return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+        },
         ...mapGetters([
             'fullScreen',
             'playlist',
             'currentSong',
             'playing',
-            'currentIndex'
+            'currentIndex',
+            'mode'
         ])
     },
     methods:{
@@ -181,7 +190,7 @@ export default {
             if(index === this.playlist.length) index = 0
             this.setCurrentIndex(index)
             if(!this.playing){
-                this.togglePlaying()
+                this.togglePlaying(this.playing)
             }
             this.songReady = false
         },
@@ -212,6 +221,14 @@ export default {
             const second = this._pad(interval % 60)
             return `${minute}:${second}`
         },
+        onPercentBarChange(percent){
+            this.$refs.audio.currentTime = this.currentSong.duration * percent
+            if(!this.playing) this.togglePlaying()
+        },
+        changeMode(){
+            const mode = (this.mode + 1) % 3
+            this.setPlayMode(mode)
+        },
         _pad(num,n = 2){
             let len = num.toString().length
             if(len < n){
@@ -238,7 +255,8 @@ export default {
         ...mapMutations({
             setFullScreen:'SET_FULL_SCREEN',
             setPlayingState:'SET_PLAYING_STATE',
-            setCurrentIndex:'SET_CURRENT_INDEX'
+            setCurrentIndex:'SET_CURRENT_INDEX',
+            setPlayMode:'SET_MODE'
         })
     },
     watch:{
@@ -255,7 +273,8 @@ export default {
         }
     },
     components:{
-        ProgressBar
+        ProgressBar,
+        ProgressCircle
     }
 }
 </script>
