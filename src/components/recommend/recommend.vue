@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="recommend">
+    <div class="recommend" ref="recommend">
         <scroll class="recommend-content" :data="distList" ref="scroll">
             <div>
                 <div class="slider-wrapper" v-if="recommends.length">
@@ -42,8 +42,10 @@ import Slider from 'base/slider/slider'
 import Loading from 'base/loading/loading'
 import {getRecommend,getDistList} from 'api/recommend'
 import {ERR_OK} from 'api/config'
+import {playlistMixin} from 'common/js/mixin'
 
 export default {
+    mixins:[playlistMixin],//将代码merge到这个文件中
     data(){
         return {
             recommends:[],
@@ -71,7 +73,12 @@ export default {
                 this.$refs.scroll.refresh()
                 this.checkLoaded = true
             }
-        }
+        },
+        handlePlaylist(playlist){//mixin
+            const bottom = playlist.length > 0 ? '60px' : ''
+            this.$refs.recommend.style.bottom = bottom
+            this.$refs.scroll.refresh()
+        },
     },
     components:{
         Slider,

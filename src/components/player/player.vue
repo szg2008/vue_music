@@ -30,6 +30,11 @@
                             <img :src="currentSong.image" alt="" class="image">
                         </div>
                     </div>
+                    <div class="playing-lyric-wrapper">
+                        <div class="playing-lyric">
+                            {{playingLyric}}
+                        </div>
+                    </div>
                 </div>
                 <scroll class="middle-r" ref="lyricList" :data="currentLyric && currentLyric.lines">
                     <div class="lyric-wrapper">
@@ -128,7 +133,8 @@ export default {
             radius:32,
             currentLyric:null,
             currentLineNum:0,
-            currentShow:'cd'
+            currentShow:'cd',
+            playingLyric:''
         }
     },
     computed:{
@@ -212,18 +218,29 @@ export default {
             this.$refs.cdwrapper.style.transform = ''
         },
         togglePlaying(){
+            if(!this.songReady){
+                return
+            }
             //使用vuex
             this.setPlayingState(!this.playing)
+            //开始播放／暂停播放的时候控制歌词
+            if(this.currentLyric){
+                this.currentLyric.togglePlay()
+            }
         },
         next(){
             if(!this.songReady){
                 return
             }
-            let index = this.currentIndex + 1
-            if(index === this.playlist.length) index = 0
-            this.setCurrentIndex(index)
-            if(!this.playing){
-                this.togglePlaying(this.playing)
+            if(this.playlist.length === 1){
+                this.loop()
+            }else{
+                let index = this.currentIndex + 1
+                if(index === this.playlist.length) index = 0
+                this.setCurrentIndex(index)
+                if(!this.playing){
+                    this.togglePlaying(this.playing)
+                }
             }
             this.songReady = false
         },
@@ -231,11 +248,15 @@ export default {
             if(!this.songReady){
                 return
             }
-            let index = this.currentIndex - 1
-            if(index === -1) index = this.playlist.length - 1
-            this.setCurrentIndex(index)
-            if(!this.playing){
-                this.togglePlaying()
+            if(this.playlist.length === 1){
+                this.loop()
+            }else{
+                let index = this.currentIndex - 1
+                if(index === -1) index = this.playlist.length - 1
+                this.setCurrentIndex(index)
+                if(!this.playing){
+                    this.togglePlaying()
+                }
             }
             this.songReady = false
         },
@@ -258,6 +279,10 @@ export default {
         loop(){
             this.$refs.audio.currentTime = 0
             this.$refs.audio.play()
+            //循环播放歌曲的时候，处理歌词
+            if(this.currentLyric){
+                this.currentLyric.seek()
+            }
         },
         format(interval){
             interval = interval | 0//向下取整
@@ -266,8 +291,12 @@ export default {
             return `${minute}:${second}`
         },
         onPercentBarChange(percent){
+            const currentTime = this.currentSong.duration * percent
             this.$refs.audio.currentTime = this.currentSong.duration * percent
             if(!this.playing) this.togglePlaying()
+            if(this.currentLyric){
+                this.currentLyric.seek(currentTime * 1000)
+            }
         },
         changeMode(){
             const mode = (this.mode + 1) % 3
@@ -294,6 +323,10 @@ export default {
                 this.currentLyric = new Lyric(lyric,this.handleLyric)
                 if(this.playing)this.currentLyric.play()
 
+            }).catch(() => {
+                this.currentLyric = null
+                this.playingLyric = ''
+                this.currentLineNum = 0
             })
         },
         handleLyric({lineNum,txt}){
@@ -304,6 +337,7 @@ export default {
             }else{
                 this.$refs.lyricList.scrollTo(0,0,1000)
             }
+            this.playingLyric = txt
         },
         middleTouchStart(e){
             this.touch.initiated = true
@@ -394,10 +428,15 @@ export default {
             if(newSong.id === oldSong.id){//如果当前歌曲没有变化，那么什么都不做
                 return
             }
-            this.$nextTick(() => {
+            //切换歌曲的时候，处理歌词
+            if(this.currentLyric){
+                this.currentLyric.stop()
+            }
+
+            setTimeout(() => {
                 this.$refs.audio.play()
                 this.getLyric()
-            })
+            },100)
         },
         playing(newPlaying){
             const audio = this.$refs.audio

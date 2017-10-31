@@ -44,12 +44,14 @@ import SongList from 'base/song-list/song-list'
 import {prefixStyle} from 'common/js/dom'
 import Loading from 'base/loading/loading'
 import {mapActions} from 'vuex'
+import {playlistMixin} from 'common/js/mixin'
 
 const RESERVED_HEIGHT = 40
 const transform = prefixStyle('transform')
 const backdrop = prefixStyle('backdrop')
 
 export default {
+    mixins:[playlistMixin],//将代码merge到这个文件中
     props:{
         bgImage:{
             type:String,
@@ -105,6 +107,11 @@ export default {
             this.randomPlay({
                 list:this.songs
             })
+        },
+        handlePlaylist(playlist){//mixin
+            const bottom = playlist.length > 0 ? '60px' : ''
+            this.$refs.list.$el.style.bottom = bottom
+            this.$refs.list.refresh()
         },
         ...mapActions([
             'selectPlay',
