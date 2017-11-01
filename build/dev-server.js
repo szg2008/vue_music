@@ -49,6 +49,40 @@ apiRoutes.get('/lyric',function(req,res){
     })
 })
 
+//获取推荐歌单列表
+apiRoutes.get('/distlist',function(req,res){
+    var url = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
+    axios.get(url,{
+        headers:{
+            referer: 'https://u.y.qq.com/',
+            host: 'u.y.qq.com'
+        },
+        params:req.query
+    }).then((response) => {
+        var ret = response.data
+        res.json(ret)
+    }).catch((e) => {
+        console.log(e)
+    })
+})
+
+//获取歌单列表
+apiRoutes.get('/songlist',function(req,res){
+    var url = 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg'
+    axios.get(url,{
+        headers:{
+            referer: 'https://c.y.qq.com/',
+            host: 'c.y.qq.com'
+        },
+        params:req.query
+    }).then((response) => {
+        var ret = response.data
+        res.json(ret)
+    }).catch((e) => {
+        console.log(e)
+    })
+})
+
 app.use('/api', apiRoutes)
 
 var compiler = webpack(webpackConfig)
