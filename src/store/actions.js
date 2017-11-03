@@ -1,6 +1,7 @@
 import * as types from './mutation-types'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
+import {saveSearch} from 'common/js/cache'
 
 //如果一个动作需要同时修改多个state，则需要action，否则使用mutation
 
@@ -38,8 +39,8 @@ export const randomPlay = function({commit},{list}){
 
 //插入歌曲
 export const insertSong = function({commit,state},song){
-    let playlist = state.playlist
-    let sequencelist = state.sequencelist
+    let playlist = state.playlist.slice()
+    let sequencelist = state.sequencelist.slice()
     let currentIndex = state.currentIndex
     //记录当前歌曲
     let currentSong = playlist[currentIndex]
@@ -81,4 +82,8 @@ export const insertSong = function({commit,state},song){
     commit(types.SET_CURRENT_INDEX,currentIndex)
     commit(types.SET_FULL_SCREEN,true)
     commit(types.SET_PLAYING_STATE,true)
+}
+
+export const saveSearchHistory = function({commit},query){
+    commit(types.SET_SEARCHHISTORY,saveSearch(query))
 }

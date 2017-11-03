@@ -1,12 +1,13 @@
 <template lang="html">
     <div class="search-box">
         <i class="icon-box"></i>
-        <input type="text" name="" value="" class="box" :placeholder="placeholder" v-model="query">
+        <input ref="query" type="text" name="" value="" class="box" :placeholder="placeholder" v-model="query">
         <i class="icon-dismiss" v-show="query" @click="clear"></i>
     </div>
 </template>
 
 <script>
+import {debounce} from 'common/js/util'
 export default {
     props:{
         placeholder:{
@@ -25,13 +26,17 @@ export default {
         },
         setQuery(query){//向外暴露一个方法以供调用
             this.query = query
+        },
+        blur(){//对外方法
+            this.$refs.query.blur()
         }
     },
     created(){
         //可以直接写成watch
-        this.$watch('query',(newQuery) => {
+        //做一个节流处理
+        this.$watch('query',debounce((newQuery) => {
             this.$emit('query',newQuery)//对外派发一个事件
-        })
+        },200))
     }
 }
 </script>

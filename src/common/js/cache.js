@@ -1,4 +1,5 @@
 import storage from 'good-storage'
+//对传统的localStorage和sessionStorage的封装
 
 const SEARCH_KEY = '__search__'
 const SEARCH_MAX_LEN = 15
@@ -91,4 +92,3 @@ export function deleteFavorite(song) {
 export function loadFavorite() {
   return storage.get(FAVORITE_KEY, [])
 }
-

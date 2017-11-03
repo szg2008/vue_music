@@ -27,6 +27,10 @@ export default {
         pullUp:{//是否监听上拉刷新
             type:Boolean,
             default:false
+        },
+        beforeScroll:{
+            type:Boolean,
+            default:false
         }
     },
     mounted(){
@@ -54,6 +58,12 @@ export default {
                     if(this.scroll.y <= (this.scroll.maxScrollY + 50)){
                         this.$emit('scrollToEnd')//已经滚动到底部
                     }
+                })
+            }
+
+            if(this.beforeScroll){
+                this.scroll.on('beforeScrollStart',() => {
+                    this.$emit('beforeScroll')
                 })
             }
         },
