@@ -23,6 +23,10 @@ export default {
         listenScroll:{//是否监听滚动的变化
             type:Boolean,
             default:false
+        },
+        pullUp:{//是否监听上拉刷新
+            type:Boolean,
+            default:false
         }
     },
     mounted(){
@@ -42,6 +46,14 @@ export default {
                 let me = this
                 this.scroll.on('scroll',(pos) =>{
                     me.$emit('scroll',pos)
+                })
+            }
+
+            if(this.pullUp){
+                this.scroll.on('scrollEnd',() => {
+                    if(this.scroll.y <= (this.scroll.maxScrollY + 50)){
+                        this.$emit('scrollToEnd')//已经滚动到底部
+                    }
                 })
             }
         },
