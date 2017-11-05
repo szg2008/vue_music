@@ -13,11 +13,27 @@
                         </li>
                     </ul>
                 </div>
+                <div class="search-history" v-show="searchHistory.length">
+                    <h1 class="title">
+                        <span class="text">搜索历史</span>
+                        <span class="clear" @click="showConfirm">
+                            <i class="icon-clear"></i>
+                        </span>
+                    </h1>
+                    <search-list :searchs="searchHistory" @select="addQuery" @delete="deleteSearchHistory"></search-list>
+                </div>
             </div>
         </div>
         <div class="search-result" v-show="query">
             <suggest :query="query" @listScroll="blurInput" @select="saveSearch"></suggest>
         </div>
+        <confirm
+            ref='confirm'
+            text="是否清空搜索历史"
+            confirmBtnText="清空"
+            @confirm="clearSearchHistory"
+        >
+    </confirm>
         <router-view></router-view>
     </div>
 </template>
@@ -27,14 +43,18 @@ import SearchBox from 'base/search-box/search-box'
 import {getHotKey} from 'api/search'
 import {ERR_OK} from 'api/config'
 import Suggest from 'components/suggest/suggest'
-import {mapActions} from 'vuex'
+import {mapActions,mapGetters} from 'vuex'
+import SearchList from 'base/search-list/search-list'
+import Confirm from 'base/confirm/confirm'
 export default {
     created(){
         this._getHotKey()
     },
     components:{
         SearchBox,
-        Suggest
+        Suggest,
+        SearchList,
+        Confirm
     },
     data(){
         return {
@@ -42,6 +62,11 @@ export default {
             hotkey:[],
             query:''
         }
+    },
+    computed:{
+        ...mapGetters([
+            'searchHistory'
+        ])
     },
     methods:{
         async _getHotKey(){
@@ -59,11 +84,16 @@ export default {
         blurInput(){
             this.$refs.searchBox.blur()
         },
+        showConfirm(){
+            this.$refs.confirm.show()
+        },
         saveSearch(){//触发保存结果
             this.saveSearchHistory(this.query)
         },
         ...mapActions([
-            'saveSearchHistory'
+            'saveSearchHistory',
+            'deleteSearchHistory',
+            'clearSearchHistory'
         ])
     }
 }

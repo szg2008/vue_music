@@ -1,7 +1,7 @@
 import * as types from './mutation-types'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
-import {saveSearch} from 'common/js/cache'
+import {saveSearch,deleteSearch,clearSearch} from 'common/js/cache'
 
 //如果一个动作需要同时修改多个state，则需要action，否则使用mutation
 
@@ -86,4 +86,12 @@ export const insertSong = function({commit,state},song){
 
 export const saveSearchHistory = function({commit},query){
     commit(types.SET_SEARCHHISTORY,saveSearch(query))
+}
+
+export const deleteSearchHistory = function({commit},query){
+    commit(types.SET_SEARCHHISTORY,deleteSearch(query))
+}
+
+export const clearSearchHistory = function ({commit}) {
+  commit(types.SET_SEARCHHISTORY, clearSearch())
 }
