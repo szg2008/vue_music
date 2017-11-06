@@ -1,7 +1,7 @@
 <template lang="html">
     <transition name="list-fade">
-        <div class="playlist">
-            <div class="list-wrapper">
+        <div class="playlist" v-show="showFlag" @click="hide">
+            <div class="list-wrapper" @click.stop>
             <div class="list-header">
                 <h1 class="title">
                     <i class="icon"></i>
@@ -9,11 +9,15 @@
                     <span class="clear"><i class="icon-clear"></i></span>
                 </h1>
             </div>
-            <div ref="listContent" class="list-content">
+            <scroll ref="listContent" class="list-content" :data="sequencelist">
                 <ul>
-                    <li>
-                      <i class="current"></i>
-                      <span class="text"></span>
+                    <li class="item"
+                        v-for="(item,index) in sequencelist"
+                        @click="selectItem(item,index)"
+                        ref="listItem"
+                    >
+                      <i class="current" :class="getCurrentIcon(item)"></i>
+                      <span class="text">{{item.name}}</span>
                       <span class="like">
                         <i></i>
                       </span>
@@ -22,14 +26,14 @@
                       </span>
                     </li>
                 </ul>
-            </div>
+            </scroll>
             <div class="list-operate">
                 <div class="add">
                     <i class="icon-add"></i>
                     <span class="text">添加歌曲到队列</span>
                 </div>
             </div>
-            <div class="list-close">
+            <div class="list-close" @click="hide">
                 <span>关闭</span>
             </div>
             </div>
@@ -38,8 +42,72 @@
 </template>
 
 <script>
+import {mapGetters,mapMutations} from 'vuex'
+import Scroll from 'base/scroll/scroll'
+import {playMode} from 'common/js/config'
 export default {
+    data(){
+        return {
+            showFlag:false
+        }
+    },
+    computed:{
+        ...mapGetters([
+            'sequencelist',
+            'currentSong',
+            'playlist'
+        ])
+    },
+    components:{
+        Scroll
+    },
+    methods:{
+        show(){
+            this.showFlag = true
+            //需要重新计算高度
+            setTimeout(() => {
+                this.$refs.listContent.refresh()
+                this.scrollToCurrent(this.currentSong)
+            },20)
+        },
+        hide(){
+            this.showFlag = false
+        },
+        getCurrentIcon(item){
+            if(this.currentSong.id === item.id){
+                return 'icon-play'
+            }
+            return ''
+        },
+        selectItem(item,index){
+            if(this.mode === playMode.random){
+                index = this.playlist.findIndex((song) => {
+                    return song.id === item.id
+                })
+            }
+            this.setCurrentIndex(index)
+            this.setPlayingState(true)
+        },
+        scrollToCurrent(current){
+            const index = this.sequencelist.findIndex((song) => {
+                return current.id === song.id
+            })
+            this.$refs.listContent.scrollToElement(this.$refs.listItem[index],300)
+        },
+        ...mapMutations({
+            'setCurrentIndex':'SET_CURRENT_INDEX',
+            'setPlayingState':'SET_PLAYING_STATE'
+        })
+    },
+    watch:{
+        currentSong(newSong,oldSong){
+            if(!this.showFlag || newSong.id === oldSong.id){
+                return
+            }
 
+            this.scrollToCurrent(newSong)
+        }
+    }
 }
 </script>
 
