@@ -35,7 +35,7 @@
             confirmBtnText="清空"
             @confirm="clearSearchHistory"
         >
-    </confirm>
+        </confirm>
         <router-view></router-view>
     </div>
 </template>
@@ -106,6 +106,7 @@ export default {
         },
         saveSearch(){//触发保存结果
             this.saveSearchHistory(this.query)
+            console.log(this.searchHistory)
         },
         ...mapActions([
             'saveSearchHistory',
