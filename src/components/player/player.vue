@@ -63,7 +63,7 @@
                 </div>
                 <div class="operators">
                     <div class="icon i-left" @click="changeMode">
-                        <i :class="iconmode"></i>
+                        <i :class="iconMode"></i>
                     </div>
                     <div class="icon i-left" :class="disableCls">
                         <i class="icon-prev" @click="prev"></i>
@@ -120,14 +120,15 @@ import {prefixStyle} from 'common/js/dom'
 import ProgressBar from 'base/progress-bar/progress-bar'
 import ProgressCircle from 'base/progress-circle/progress-circle'
 import {playMode} from 'common/js/config'
-import {shuffle} from 'common/js/util'
 import Lyric from 'lyric-parser'
 import Scroll from 'base/scroll/scroll'
 import Playlist from 'components/playlist/playlist'
+import {playerMixin} from 'common/js/mixin'
 
 const transform = prefixStyle('transform')
 const transitionDuration = prefixStyle('transitionDuration')
 export default {
+    mixins:[playerMixin],
     data(){
         return {
             songReady:false,//控制歌曲已经加载完毕
@@ -155,17 +156,10 @@ export default {
         percent(){
             return this.currentTime / this.currentSong.duration
         },
-        iconmode(){
-            return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
-        },
         ...mapGetters([
             'fullScreen',
-            'playlist',
-            'currentSong',
-            'playing',
             'currentIndex',
-            'mode',
-            'sequencelist'
+            'playing'
         ])
     },
     created(){
@@ -300,26 +294,6 @@ export default {
                 this.currentLyric.seek(currentTime * 1000)
             }
         },
-        changeMode(){
-            const mode = (this.mode + 1) % 3
-            this.setPlayMode(mode)
-            let list = null
-            if(mode === playMode.random){//随机播放
-                list = shuffle(this.sequencelist)
-            }else{
-                list = this.sequencelist
-            }
-
-            this.resetCurrentIndex(list)
-
-            this.setPlayList(list)
-        },
-        resetCurrentIndex(list){
-            let index = list.findIndex((item,index) => {
-                return item.id === this.currentSong.id
-            })
-            this.setCurrentIndex(index)
-        },
         getLyric(){
             this.currentSong.getLyric().then((lyric) => {
                 this.currentLyric = new Lyric(lyric,this.handleLyric)
@@ -421,15 +395,12 @@ export default {
             }
         },
         ...mapMutations({
-            setFullScreen:'SET_FULL_SCREEN',
-            setPlayingState:'SET_PLAYING_STATE',
-            setCurrentIndex:'SET_CURRENT_INDEX',
-            setPlayMode:'SET_MODE',
-            setPlayList:'SET_PLAYLIST'
+            setFullScreen:'SET_FULL_SCREEN'
         })
     },
     watch:{
         currentSong(newSong,oldSong){
+            if(!newSong.id)return
             if(newSong.id === oldSong.id){//如果当前歌曲没有变化，那么什么都不做
                 return
             }
