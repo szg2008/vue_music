@@ -1,13 +1,13 @@
 <template lang="html">
     <div class="search-list" v-show="searchs.length">
-        <!-- <transition-group name="list" tag="ul"> -->
-            <li v-for="(item,index) in searchs" class="search-item" @click="selectItem(item)">
+        <transition-group name="list" tag="ul">
+            <li :key="item" v-for="(item,index) in searchs" class="search-item" @click="selectItem(item)">
                 <span class="text">{{item}}</span>
                 <span class="icon" @click.stop="deleteOne(item)">
                     <i class="icon-delete"></i>
                 </span>
             </li>
-        <!-- </transition-group> -->
+        </transition-group>
     </div>
 </template>
 
@@ -19,9 +19,6 @@ export default {
             type:Array,
             default:[]
         }
-    },
-    created(){
-        // console.log(this.searchs)
     },
     methods:{
         selectItem(item){

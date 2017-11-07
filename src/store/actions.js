@@ -1,7 +1,7 @@
 import * as types from './mutation-types'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
-import {saveSearch,deleteSearch,clearSearch} from 'common/js/cache'
+import {saveSearch,deleteSearch,clearSearch,savePlay} from 'common/js/cache'
 
 //如果一个动作需要同时修改多个state，则需要action，否则使用mutation
 
@@ -124,4 +124,10 @@ export const deleteSongList = function({commit}){
     commit(types.SET_SEQUENCELIST,[])
     commit(types.SET_CURRENT_INDEX,-1)
     commit(types.SET_PLAYING_STATE,false)
+}
+
+//播放历史
+export const savePlayHistory = function({commit},song){
+    commit(types.SET_PLAYHISTORY,savePlay(song))
+    
 }

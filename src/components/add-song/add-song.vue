@@ -16,7 +16,29 @@
                 </search-box>
             </div>
             <div class="shortcut" v-show="!query">
-
+                <switches :currentIndex="currentIndex" :switches="switches" @switch="switchItem"></switches>
+                <div class="list-wrapper">
+                    <scroll
+                        v-if="currentIndex === 0"
+                        :data="playHistory"
+                        class="list-scroll"
+                        ref="songlist"
+                    >
+                        <div class="list-inner">
+                            <song-list :songs="playHistory" @select="selectSong"></song-list>
+                        </div>
+                    </scroll>
+                    <scroll
+                        v-if="currentIndex === 1"
+                        :data="searchHistory"
+                        class="list-scroll"
+                        ref="searchlist"
+                    >
+                        <div class="list-inner">
+                            <search-list @delete="deleteSearchHistory" @select="addQuery" :searchs="searchHistory"></search-list>
+                        </div>
+                    </scroll>
+                </div>
             </div>
             <div class="search-result" v-show="query">
                 <suggest
@@ -35,28 +57,66 @@
 import SearchBox from 'base/search-box/search-box'
 import Suggest from 'components/suggest/suggest'
 import {searchMixin} from 'common/js/mixin'
+import Switches from 'base/switches/switches'
+import Scroll from 'base/scroll/scroll'
+import {mapGetters,mapActions} from 'vuex'
+import SongList from 'base/song-list/song-list'
+import Song from 'common/js/song'
+import SearchList from 'base/search-list/search-list'
 export default {
     mixins:[searchMixin],
     data(){
         return {
             showFlag:false,
-            showSinger:false
+            showSinger:false,
+            currentIndex:0,
+            switches:[
+                {name:'最近播放'},
+                {name:'搜索历史'}
+            ]
         }
     },
     components:{
         SearchBox,
-        Suggest
+        Suggest,
+        Switches,
+        Scroll,
+        SongList,
+        SearchList
+    },
+    computed:{
+        ...mapGetters([
+            'playHistory'
+        ])
     },
     methods:{
         show(){
             this.showFlag = true
+            setTimeout(() => {
+                if(this.currentIndex === 0){
+                    this.$refs.songlist.refresh()
+                }else{
+                    this.$refs.searchlist.refresh()
+                }
+            },20)
         },
         hide(){
             this.showFlag = false
         },
         selectSuggest(){
             this.saveSearch()
-        }
+        },
+        switchItem(index){
+            this.currentIndex = index
+        },
+        selectSong(song,index){
+            if(index !== 0){
+                this.insertSong(new Song(song))
+            }
+        },
+        ...mapActions([
+            'insertSong'
+        ])
     }
 }
 </script>
