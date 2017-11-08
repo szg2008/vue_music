@@ -1,7 +1,7 @@
 import * as types from './mutation-types'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
-import {saveSearch,deleteSearch,clearSearch,savePlay} from 'common/js/cache'
+import {saveSearch,deleteSearch,clearSearch,savePlay,saveFavorite,deleteFavorite} from 'common/js/cache'
 
 //如果一个动作需要同时修改多个state，则需要action，否则使用mutation
 
@@ -129,5 +129,14 @@ export const deleteSongList = function({commit}){
 //播放历史
 export const savePlayHistory = function({commit},song){
     commit(types.SET_PLAYHISTORY,savePlay(song))
-    
+
+}
+
+//喜欢的
+export const saveFavoriteList = function({commit},song){
+    commit(types.SET_FAVORITE_LIST,saveFavorite(song))
+}
+
+export const deleteFavoriteList = function({commit},song){
+    commit(types.SET_FAVORITE_LIST,deleteFavorite(song))
 }

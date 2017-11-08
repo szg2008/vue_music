@@ -23,6 +23,7 @@
                         :data="playHistory"
                         class="list-scroll"
                         ref="songlist"
+                        :refreshDelay="refreshDelay"
                     >
                         <div class="list-inner">
                             <song-list :songs="playHistory" @select="selectSong"></song-list>
@@ -33,6 +34,7 @@
                         :data="searchHistory"
                         class="list-scroll"
                         ref="searchlist"
+                        :refreshDelay="refreshDelay"
                     >
                         <div class="list-inner">
                             <search-list @delete="deleteSearchHistory" @select="addQuery" :searchs="searchHistory"></search-list>
@@ -49,6 +51,12 @@
                 >
                 </suggest>
             </div>
+            <top-tip ref='topTip' :delay=2000>
+                <div class="tip-title">
+                    <i class="icon-ok"></i>
+                    <span class="text">1首歌曲已经添加到播放队列</span>
+                </div>
+            </top-tip>
         </div>
     </transition>
 </template>
@@ -63,6 +71,7 @@ import {mapGetters,mapActions} from 'vuex'
 import SongList from 'base/song-list/song-list'
 import Song from 'common/js/song'
 import SearchList from 'base/search-list/search-list'
+import TopTip from 'base/top-tip/top-tip'
 export default {
     mixins:[searchMixin],
     data(){
@@ -82,7 +91,8 @@ export default {
         Switches,
         Scroll,
         SongList,
-        SearchList
+        SearchList,
+        TopTip
     },
     computed:{
         ...mapGetters([
@@ -105,6 +115,7 @@ export default {
         },
         selectSuggest(){
             this.saveSearch()
+            this.showTip()
         },
         switchItem(index){
             this.currentIndex = index
@@ -112,7 +123,11 @@ export default {
         selectSong(song,index){
             if(index !== 0){
                 this.insertSong(new Song(song))
+                this.showTip()
             }
+        },
+        showTip(){
+            this.$refs.topTip.show()
         },
         ...mapActions([
             'insertSong'

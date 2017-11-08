@@ -9,10 +9,10 @@ export const playlistMixin = {
     ])
   },
   mounted() {
-    this.handlePlaylist(this.playlist)
+      this.handlePlaylist(this.playlist)
   },
   activated() {
-    this.handlePlaylist(this.playlist)
+      this.handlePlaylist(this.playlist)
   },
   watch: {
     playlist(newVal) {
@@ -21,7 +21,7 @@ export const playlistMixin = {
   },
   methods: {
     handlePlaylist() {
-      throw new Error('component must implement handlePlaylist method')
+        throw new Error('component must implement handlePlaylist method')
     }
   }
 }
@@ -35,7 +35,8 @@ export const playerMixin = {
         'sequencelist',
         'playlist',
         'currentSong',
-        'mode'
+        'mode',
+        'favoriteList'
     ])
   },
   methods: {
@@ -57,6 +58,27 @@ export const playerMixin = {
         })
         this.setCurrentIndex(index)
     },
+    getFavoriteIcon(song){
+        if(this.isFavorite(song)){
+            return 'icon-favorite'
+        }
+
+        return 'icon-not-favorite'
+    },
+    toggleFavorite(song){
+        if(this.isFavorite(song)){
+            this.deleteFavoriteList(song)
+        }else{
+            this.saveFavoriteList(song)
+        }
+    },
+    isFavorite(song){
+        const index = this.favoriteList.findIndex((item) => {
+            return item.id === song.id
+        })
+
+        return index > -1
+    },
     ...mapMutations({
         setPlayMode: 'SET_MODE',
         setPlaylist: 'SET_PLAYLIST',
@@ -64,7 +86,8 @@ export const playerMixin = {
         setPlayingState: 'SET_PLAYING_STATE'
     }),
     ...mapActions([
-
+        'saveFavoriteList',
+        'deleteFavoriteList'
     ])
   }
 }
@@ -72,7 +95,8 @@ export const playerMixin = {
 export const searchMixin = {
   data() {
     return {
-      query: ''
+      query: '',
+      refreshDelay:100
     }
   },
   computed: {
