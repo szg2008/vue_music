@@ -104,7 +104,7 @@
         <audio
             ref="audio"
             :src="currentSong.url"
-            @canplay="ready"
+            @play="ready"
             @error="error"
             @timeupdate="updateTime"
             @ended="end"
@@ -230,6 +230,7 @@ export default {
             }
             if(this.playlist.length === 1){
                 this.loop()
+                return
             }else{
                 let index = this.currentIndex + 1
                 if(index === this.playlist.length) index = 0
@@ -246,6 +247,7 @@ export default {
             }
             if(this.playlist.length === 1){
                 this.loop()
+                return
             }else{
                 let index = this.currentIndex - 1
                 if(index === -1) index = this.playlist.length - 1
@@ -297,6 +299,7 @@ export default {
         },
         getLyric(){
             this.currentSong.getLyric().then((lyric) => {
+                if(this.currentSong.lyric !== lyric) return//防止切换导致的问题
                 this.currentLyric = new Lyric(lyric,this.handleLyric)
                 if(this.playing)this.currentLyric.play()
 
@@ -412,11 +415,11 @@ export default {
             if(this.currentLyric){
                 this.currentLyric.stop()
             }
-
-            setTimeout(() => {
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
                 this.$refs.audio.play()
                 this.getLyric()
-            },100)
+            },1000)
         },
         playing(newPlaying){
             const audio = this.$refs.audio
