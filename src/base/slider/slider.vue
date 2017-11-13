@@ -15,17 +15,16 @@
   import BScroll from 'better-scroll'
 
   export default {
-    name: 'slider',
     props: {
-      loop: {
+      loop: {//循环轮播
         type: Boolean,
         default: true
       },
-      autoPlay: {
+      autoPlay: {//自动轮播
         type: Boolean,
         default: true
       },
-      interval: {
+      interval: {//轮播间隔
         type: Number,
         default: 4000
       }
@@ -75,7 +74,6 @@
         for (let i = 0; i < this.children.length; i++) {
           let child = this.children[i]
           addClass(child, 'slider-item')
-
           child.style.width = sliderWidth + 'px'
           width += sliderWidth
         }
@@ -86,13 +84,13 @@
       },
       _initSlider() {
         this.slider = new BScroll(this.$refs.slider, {
-          scrollX: true,
-          scrollY: false,
-          momentum: false,
-          snap: true,
-          snapLoop: this.loop,
-          snapThreshold: 0.3,
-          snapSpeed: 400
+            scrollX: true,
+            scrollY: false,
+            momentum: false,
+            snap: true,
+            snapLoop: this.loop,
+            snapThreshold: 0.3,
+            snapSpeed: 400
         })
 
         this.slider.on('scrollEnd', () => {

@@ -69,7 +69,7 @@ export default {
             const result = await getDistList()
             this.distList = result.recomPlaylist.data.v_hot
         },
-        loadImage() {
+        loadImage() {//为了正确计算scroll的高度
             if(!this.checkLoaded){
                 this.$refs.scroll.refresh()
                 this.checkLoaded = true
