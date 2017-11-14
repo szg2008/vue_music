@@ -7,7 +7,7 @@
         @scroll="scroll"
         >
         <ul class="list-cont">
-            <li  v-for="group in data" class="list-group" ref="listGroup">
+            <li v-for="group in data" class="list-group" ref="listGroup">
                 <h2 class="list-group-title">{{group.title}}</h2>
                 <ul class="list-cont">
                     <li @click="selectItem(item)" v-for="item in group.items" class="list-group-item">
@@ -96,7 +96,7 @@ export default {
         onShortcutTouchMove(e){
             let firstTouch = e.touches[0]
             this.touch.y2 = firstTouch.pageY
-            let delta = (this.touch.y2 - this.touch.y1) /ANCHOR_HEIGHT | 0
+            let delta = (this.touch.y2 - this.touch.y1) /ANCHOR_HEIGHT | 0//向下取整
             let anchorIndex = +this.touch.anchorIndex + delta
             this._scrollTo(anchorIndex)
         },
