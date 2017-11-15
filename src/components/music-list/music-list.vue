@@ -14,12 +14,6 @@
             <div class="filter" ref="filter"></div>
         </div>
         <div class="bg-layer" ref="layer"></div>
-        <div class="song-list-wrapper">
-
-        </div>
-        <div class="loading-container">
-
-        </div>
         <scroll
             :probeType="probeType"
             :listen-scroll="listenScroll"
@@ -129,7 +123,7 @@ export default {
             let scale = 1
             let blur = 0
             this.$refs.layer.style[transform] = `translate3d(0,${translateY}px,0)`
-            const percent = Math.abs(newY / this.imageHeight)
+            const percent = Math.abs(newY / this.imageHeight)//图片放大的比例
             if(newY > 0){
                 scale = 1 + percent
                 zIndex = 10

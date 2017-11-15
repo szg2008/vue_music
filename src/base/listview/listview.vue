@@ -75,7 +75,7 @@ export default {
         return {
             scrollY:-1,
             currentIndex:0,
-            diff:-1
+            diff:-1//区块的上限和scrollY的差值
         }
     },
     components:{
