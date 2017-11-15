@@ -42,7 +42,7 @@ import {playlistMixin} from 'common/js/mixin'
 
 const RESERVED_HEIGHT = 40
 const transform = prefixStyle('transform')
-const backdrop = prefixStyle('backdrop')
+const backdrop = prefixStyle('backdrop-filter')
 
 export default {
     mixins:[playlistMixin],//将代码merge到这个文件中
