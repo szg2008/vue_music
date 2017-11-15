@@ -5,7 +5,7 @@ const state = {
     playing:false,
     fullScreen:false,
     playlist:[],
-    sequencelist:[],
+    sequencelist:[],//当播放模式不同时，playlist和sequencelist不一样
     mode:playMode['sequence'],
     currentIndex:-1,
     dist:{},
