@@ -28,10 +28,10 @@ export const selectPlay = function({commit,state},{list,index}) {
 
 //随机播放
 export const randomPlay = function({commit},{list}){
-    commit(types.SET_MODE,playMode.random)
-    commit(types.SET_SEQUENCELIST,list)
+    commit(types.SET_MODE,playMode.random)//设置播放模式是随机播放
+    commit(types.SET_SEQUENCELIST,list)//顺序列表
     let randomlist = shuffle(list)
-    commit(types.SET_PLAYLIST,randomlist)
+    commit(types.SET_PLAYLIST,randomlist)//播放列表
     commit(types.SET_CURRENT_INDEX,0)
     commit(types.SET_FULL_SCREEN,true)
     commit(types.SET_PLAYING_STATE,true)

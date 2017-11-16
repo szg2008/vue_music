@@ -22,7 +22,7 @@ export default {
     },
     data(){
         return {
-            dashArray:Math.PI * 100
+            dashArray:2 * Math.PI * 50
         }
     },
     computed:{

@@ -190,7 +190,7 @@ export default {
             animations.registerAnimation({//注册
                 name:"move",
                 animation,
-                presets: {
+                presets: {//预设间隔
                     duration: 500,
                     easing: 'linear'
                 }
@@ -207,7 +207,7 @@ export default {
             this.$refs.cdwrapper.style.transition = 'all 0.4s'
             const {x,y,scale} = this._getPointsAndScale()
             this.$refs.cdwrapper.style[transform] = `translate3d(${x}px,${y}px,0) scale(${scale})`
-            this.$refs.cdwrapper.addEventListener('transitionend',done)//动画结束，执行done
+            this.$refs.cdwrapper.addEventListener('transitionend',done)//动画结束，执行done,在完成动画之后触发
         },
         afterleave(){
             this.$refs.cdwrapper.style.transition = ''
@@ -285,13 +285,13 @@ export default {
         },
         format(interval){
             interval = interval | 0//向下取整
-            const minute = interval / 60 | 0
+            const minute = ~~(interval / 60)//向下取整
             const second = this._pad(interval % 60)
             return `${minute}:${second}`
         },
         onPercentBarChange(percent){
             const currentTime = this.currentSong.duration * percent
-            this.$refs.audio.currentTime = this.currentSong.duration * percent
+            this.$refs.audio.currentTime = currentTime
             if(!this.playing) this.togglePlaying()
             if(this.currentLyric){
                 this.currentLyric.seek(currentTime * 1000)
@@ -300,9 +300,8 @@ export default {
         getLyric(){
             this.currentSong.getLyric().then((lyric) => {
                 if(this.currentSong.lyric !== lyric) return//防止切换导致的问题
-                this.currentLyric = new Lyric(lyric,this.handleLyric)
-                if(this.playing)this.currentLyric.play()
-
+                this.currentLyric = new Lyric(lyric,this.handleLyric)//处理歌词播放的动作
+                if(this.playing)this.currentLyric.play()//歌词播放
             }).catch(() => {
                 this.currentLyric = null
                 this.playingLyric = ''
