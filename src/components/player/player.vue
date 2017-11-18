@@ -280,7 +280,7 @@ export default {
             this.$refs.audio.play()
             //循环播放歌曲的时候，处理歌词
             if(this.currentLyric){
-                this.currentLyric.seek()
+                this.currentLyric.seek()//重新初始化歌词
             }
         },
         format(interval){
@@ -411,7 +411,7 @@ export default {
             if(newSong.id === oldSong.id){//如果当前歌曲没有变化，那么什么都不做
                 return
             }
-            //切换歌曲的时候，处理歌词
+            //切换歌曲的时候，将当前歌曲的歌词对象清除掉
             if(this.currentLyric){
                 this.currentLyric.stop()
             }
