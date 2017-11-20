@@ -39,12 +39,12 @@ export const randomPlay = function({commit},{list}){
 
 //插入歌曲
 export const insertSong = function({commit,state},song){
-    let playlist = state.playlist.slice()
-    let sequencelist = state.sequencelist.slice()
+    let playlist = state.playlist.slice()//返回一个state副本，不要在此进行直接引用
+    let sequencelist = state.sequencelist.slice()//返回一个state副本，不要在此进行直接引用
     let currentIndex = state.currentIndex
     //记录当前歌曲
     let currentSong = playlist[currentIndex]
-    //查找当前列表中是否存在待插入的歌曲，饼返回索引
+    //查找当前列表中是否存在待插入的歌曲，并返回索引
     let fpIndex = findIndex(playlist,song)
 
     //因为是插入歌曲，所以索引+1
@@ -52,7 +52,7 @@ export const insertSong = function({commit,state},song){
     //插入这首歌到当前索引位置
     playlist.splice(currentIndex,0,song)
 
-    //如果已经包含了这首曲
+    //如果已经包含了这首歌曲
     if(fpIndex > -1){
         //如果当前插入的序号大于列表中的序号
         if(currentIndex > fpIndex){

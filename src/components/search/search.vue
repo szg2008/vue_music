@@ -74,7 +74,7 @@ export default {
         }
     },
     computed:{
-        shortcut(){
+        shortcut(){//两个数据都是异步获取，所以将两个数据连接，然后传递给scroll
             return this.hotkey.concat(this.searchHistory)
         }
     },

@@ -61,9 +61,6 @@ export default {
             hasMore:true
         }
     },
-    created(){
-
-    },
     methods:{
         search(){
             this.page = 1
@@ -116,7 +113,6 @@ export default {
             if(!song.list.length && (song.curnum + this.page * perpage) >= song.totalnum){
                 this.hasMore = false
             }
-
         },
         getIconClass(item){
             if(item.type === TYPE_SINGER){
